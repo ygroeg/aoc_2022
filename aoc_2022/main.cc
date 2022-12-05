@@ -12,8 +12,8 @@ int main() {
   //  day_3::Solution("../sample_d3.txt");
   //  day_3::Solution("../input_d3.txt");
   //  day_4::Solution("../sample_d4.txt");
-  day_4::Solution("../input_d4.txt");
+  //  day_4::Solution("../input_d4.txt");
   //  day_5::Solution("../sample_d5.txt");
-  //  day_5::Solution("../input_d5.txt");
+  day_5::Solution("../input_d5.txt");
   return 0;
 }

@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <queue>
+#include <stack>
 
 #include "common.h"
 
@@ -246,26 +248,58 @@ void Part2(const std::string& path) {
 }  // namespace day_4
 namespace day_5 {
 void Solution(const std::string& path) {
+  Part1(path);
+  //  Part2(path);
+}
+void Part1(const std::string& path) {
   auto contents = ReadFile(path);
-  int biggest_stack = 0;
-  int stack = 0;
-  std::vector<int> elfs;
-  for (const std::string& s : contents) {
-    if (!s.empty()) {
-      stack += std::stoi(s);
-    } else {
-      if (stack > biggest_stack) {
-        biggest_stack = stack;
+  std::vector<std::deque<char>> stacks;
+  //  std::deque<char> stack;
+  for (std::string& s : contents) {
+    if (s.find('[') != std::string::npos) {
+      //      std::cout << "config " << s << std::endl;
+      int count = 1;
+      //      for (auto i = s.find('['); i < s.size(); i += 4) {
+      for (int i = 0; i < s.size(); i += 4) {
+        if (count > stacks.size()) {
+          stacks.push_back(std::deque<char>());
+        }
+        if (s[i + 1] != ' ') {
+          stacks[count - 1].push_back(s[i + 1]);
+        }
+        count++;
       }
-      elfs.push_back(stack);
-      stack = 0;
+      //      for (auto it = s.find('['); it != std::string::npos;) {
+      //        std::cout << "config " << it << s.substr(it + 1, 1) <<
+      //        std::endl; s = s.substr(it + 1);
+      //      }
+    } else if (s.find("move") != std::string::npos) {
+      auto from = s.find("move");
+      auto to = s.find("from");
+      int amount = std::stoi(s.substr(from + 4, to));
+      from = s.find("from");
+      to = s.find("to");
+      int s1 = std::stoi(s.substr(from + 4, to));
+      from = s.find("to");
+      int s2 = std::stoi(s.substr(from + 2));
+      std::stack<char> tmp;
+      for (int i = 0; i < amount; i++) {
+        tmp.push(stacks[s1 - 1].front());
+        stacks[s1 - 1].pop_front();
+      }
+      for (int i = 0; i < amount; i++) {
+        stacks[s2 - 1].push_front(tmp.top());
+        tmp.pop();
+      }
+      //      std::cout << "instructions " << s << '\t' << amount << '\t' << s1
+      //      << '\t'
+      //                << s2 << std::endl;
     }
   }
-  std::sort(elfs.begin(), elfs.end());
-  std::reverse(elfs.begin(), elfs.end());
-  std::cout << "top 3 elfs sum: " << elfs[0] + elfs[1] + elfs[2] << std::endl;
-
-  std::cout << "biggest_stack = " << biggest_stack << std::endl;
+  for (const auto& s : stacks) {
+    std::cout << s.front() /*<< std::endl*/;
+  }
+  std::cout << std::endl;
 }
 
 void Part2(const std::string& path) {}
